@@ -2,6 +2,8 @@
 import pandas as pd
 import re
 import nltk
+nltk.download('punkt')
+nltk.download('wordnet')
 
 
 from yellowbrick.text import FreqDistVisualizer
