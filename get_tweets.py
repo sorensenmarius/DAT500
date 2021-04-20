@@ -28,4 +28,4 @@ for i in tqdm(range(100)):
         pass
 
 # %%
-tweets
+tweets = tweets[tweets['Text'] != '']
