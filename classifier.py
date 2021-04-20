@@ -1,23 +1,14 @@
 #%%
 import pandas as pd
-import numpy as np
-import matplotlib.pyplot as plt
-from scipy import sparse
-import seaborn as sns
 import re
 import nltk
 
 
 from yellowbrick.text import FreqDistVisualizer
 from sklearn.feature_extraction.text import CountVectorizer
-from sklearn.model_selection import train_test_split, StratifiedKFold, GridSearchCV
-from sklearn.neighbors import KNeighborsClassifier
 from sklearn.linear_model import LogisticRegression
-from sklearn.tree import DecisionTreeClassifier
-from sklearn.svm import SVC
-from sklearn.ensemble import RandomForestClassifier, VotingClassifier
+from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import accuracy_score
-from sklearn.naive_bayes import GaussianNB, MultinomialNB
 
 
 import warnings
@@ -35,8 +26,6 @@ data.dropna(axis = 0, inplace = True)
 data.gender = [1 if gender == "female" else 0 for gender in data.gender]
 
 testData.dropna(axis=0, inplace=True)
-#%%
-
 
 # %% natural language processing 
 def nl_processing(data): 
@@ -100,7 +89,3 @@ y_pred = rf.predict(x_test)
 # Random Forest 
 accuracy = 100.0 * accuracy_score(y_test, y_pred)
 print("Accuracy: ", accuracy)
-
-#%%
-
-# %%
