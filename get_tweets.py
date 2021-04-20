@@ -14,7 +14,7 @@ tweets = pd.read_table('data/corona_tweets_01.csv',
                         sep=',')
 # %%
 tweets['Text'] = ''
-headers = {'Authorization': f'Bearer {os.getenv("TWITTER_TOKEN")}'}
+headers = {'Authorization': f'Bearer {os.getenv("TWITTER_TOKEN_4")}'}
 for i in tqdm(range(100)):
     tweet_ids = ','.join([str(item) for item in tweets.index[100 * i:100 * (i + 1)]])
     r = requests.get(f'https://api.twitter.com/2/tweets?ids={tweet_ids}', headers = headers)
@@ -24,7 +24,8 @@ for i in tqdm(range(100)):
             d = response['data']
             for tweet in d:
                 tweets.loc[int(tweet['id']), 'Text'] = tweet['text']
-    except: pass
+    except:
+        pass
 
 # %%
 tweets = tweets[tweets['Text'] != '']
