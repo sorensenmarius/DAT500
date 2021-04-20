@@ -24,6 +24,7 @@ for i in tqdm(range(100)):
             d = response['data']
             for tweet in d:
                 tweets.loc[int(tweet['id']), 'Text'] = tweet['text']
+    except: pass
 
 # %%
-tweets
+tweets = tweets[tweets['Text'] != '']
