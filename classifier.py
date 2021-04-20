@@ -2,7 +2,7 @@
 import pandas as pd
 import re
 import nltk
-import json
+import pickle
 nltk.download('punkt')
 nltk.download('wordnet')
 
@@ -80,11 +80,8 @@ x_train, x_test, y_train, y_test = train_test_split(x, y, test_size = 0.1, rando
 lr = LogisticRegression(random_state = 22)
 lr.fit(x, y)
 
-reg_params = lr.get_params()
-
 print('Saving LR parameters')
-with open('./reg_params.json', 'w') as f:
-    json.dump(reg_params, f)
+pickle.dump(lr, open('./reg_params.sav', 'wb'))
 
 y_pred = lr.predict(x_test)
 accuracy = 100.0 * accuracy_score(y_test, y_pred)
@@ -92,12 +89,13 @@ print("Accuracy:{:.3%}".format(accuracy_score(y_test, y_pred)))
 
 #%%
 print('Loading LR parameters')
-lr2 = LogisticRegression(random_state = 22)
-with open('./reg_params.json', 'r') as f:
-    p = json.load(f)
-lr2.set_params()
+lr2 = pickle.load(open('./reg_params.sav', 'rb'))
 
-
-y_pred = lr.predict(x_test)
+y_pred = lr2.predict(x_test)
 accuracy = 100.0 * accuracy_score(y_test, y_pred)
 print("Accuracy:{:.3%}".format(accuracy_score(y_test, y_pred)))
+
+#%%
+def classify_gender(x):
+    lr = pickle.load(open('./reg_params.sav', 'rb'))
+    return lr.predict(x)
