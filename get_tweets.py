@@ -16,7 +16,7 @@ tweets = pd.read_table('data/corona_tweets_01.csv',
 tweets['Text'] = ''
 headers = {'Authorization': f'Bearer {os.getenv("TWITTER_TOKEN_4")}'}
 for i in tqdm(range(100)):
-    tweet_ids = ','.join([str(item) for item in tweets.index[100 * 0:100 * (0 + 1)]])
+    tweet_ids = ','.join([str(item) for item in tweets.index[100 * i:100 * (i + 1)]])
     r = requests.get(f'https://api.twitter.com/2/tweets?ids={tweet_ids}', headers = headers)
     try:
         response = json.loads(r.content)
