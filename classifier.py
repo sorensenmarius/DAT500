@@ -1,8 +1,10 @@
 #%%
 import pandas as pd
+import numpy as np
 import re
 import nltk
 import pickle
+from scipy import sparse
 nltk.download('punkt')
 nltk.download('wordnet')
 
@@ -22,7 +24,7 @@ warnings.filterwarnings("ignore")
 
 #%%
 trainData = pd.read_csv(r'data/gender-classifier-DFE-791531.csv',
-                   encoding = "utf-8")
+                   encoding = "latin1")
 
 # testData = pd.read_csv(r'data/blog-gender-dataset-clean.csv',names=["gender","description"],
                 #    encoding = "utf-8")
@@ -66,6 +68,7 @@ def bag_words(description_list):
 
 #%%
 sparce_matrix, features = bag_words(description_list)
+pickle.dump(features, open('./reg_features.sav', 'wb'))
 
 #%% visualize most freq words
 visualizer = FreqDistVisualizer(features=features, orient='v', n = 10, color = "orange")
@@ -86,7 +89,7 @@ x_train, x_test, y_train, y_test = train_test_split(x, y, test_size = 0.1, rando
 # %% Logistic regression
 lr = LogisticRegression(random_state = 22)
 lr.fit(x_train, y_train)
-
+print(lr.get_params)
 print('Saving LR parameters')
 pickle.dump(lr, open('./reg_params.sav', 'wb'))
 
@@ -104,5 +107,20 @@ print("Accuracy:{:.3%}".format(accuracy_score(y_test, y_pred)))
 
 #%%
 def classify_gender(x):
+    #id, sentiment, text = x.split(",",2)
+    text = x
+    features = pickle.load(open('./reg_features.sav', 'rb'))
+    sparce_test = [feature not in text for feature in features]
+    sparce_test =np.array(sparce_test).astype(int).reshape(1,-1)
     lr = pickle.load(open('./reg_params.sav', 'rb'))
-    return lr.predict(x)
+    return lr.predict(sparce_test)
+
+#%%
+
+    
+
+
+
+# %%
+
+# %%
