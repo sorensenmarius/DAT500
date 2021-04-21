@@ -79,8 +79,6 @@ def get_tweets(token):
                     df_inner = pd.DataFrame(columns=['id', 'Sentiment', 'Text'])
                     df_inner.set_index('id')
                 
-get_tweets('TWITTER_TOKEN_2')
-
 
 # %%
 try:
