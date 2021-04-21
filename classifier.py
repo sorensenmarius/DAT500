@@ -2,6 +2,7 @@
 import pandas as pd
 import re
 import nltk
+import pickle
 nltk.download('punkt')
 nltk.download('wordnet')
 
@@ -11,6 +12,8 @@ from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.linear_model import LogisticRegression
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import accuracy_score
+from sklearn.model_selection import train_test_split
+
 
 
 import warnings
@@ -20,14 +23,14 @@ warnings.filterwarnings("ignore")
 trainData = pd.read_csv(r'data/gender-classifier-DFE-791531.csv',
                    encoding = "latin1")
 
-testData = pd.read_csv(r'data/blog-gender-dataset-clean.csv',names=["gender","description"],
-                   encoding = "latin1")
+# testData = pd.read_csv(r'data/blog-gender-dataset-clean.csv',names=["gender","description"],
+                #    encoding = "latin1")
 #%%
 data = trainData.loc[:,["gender", "description"]]
 data.dropna(axis = 0, inplace = True)
 data.gender = [1 if gender == "female" else 0 for gender in data.gender]
 
-testData.dropna(axis=0, inplace=True)
+# testData.dropna(axis=0, inplace=True)
 
 # %% natural language processing 
 def nl_processing(data): 
@@ -44,7 +47,7 @@ def nl_processing(data):
 
 #%%
 description_list = nl_processing(data)
-description_list_test = nl_processing(testData)
+# description_list_test = nl_processing(testData)
 # %%
 # Bag of Words
 def bag_words(description_list):
@@ -64,30 +67,35 @@ visualizer.show()
 # %%
 y = data.iloc[:, 0].values
 x = sparce_matrix
-y_test = testData.iloc[:, 0].values
-x_test,_ = bag_words(description_list_test)
+# y_test = testData.iloc[:, 0].values
+# x_test,_ = bag_words(description_list_test)
 
-x_test.shape
+# x_test.shape
 
 # %% splits into train and test subset 
-#x_train, x_test, y_train, y_test = train_test_split(x, y, test_size = 0.1, random_state = 42)
+x_train, x_test, y_train, y_test = train_test_split(x, y, test_size = 0.1, random_state = 42)
 #%%
 
 # %% Logistic regression
-lr = LogisticRegression(random_state = 42)
+lr = LogisticRegression(random_state = 22)
 lr.fit(x, y)
 
+print('Saving LR parameters')
+pickle.dump(lr, open('./reg_params.sav', 'wb'))
+
 y_pred = lr.predict(x_test)
-print(len(y_pred))
 accuracy = 100.0 * accuracy_score(y_test, y_pred)
 print("Accuracy:{:.3%}".format(accuracy_score(y_test, y_pred)))
-# %%
-# Random Forest Implementation
 
-rf = RandomForestClassifier()
-rf.fit(x, y)
-# prediction
-y_pred = rf.predict(x_test)
-# Random Forest 
+#%%
+print('Loading LR parameters')
+lr2 = pickle.load(open('./reg_params.sav', 'rb'))
+
+y_pred = lr2.predict(x_test)
 accuracy = 100.0 * accuracy_score(y_test, y_pred)
-print("Accuracy: ", accuracy)
+print("Accuracy:{:.3%}".format(accuracy_score(y_test, y_pred)))
+
+#%%
+def classify_gender(x):
+    lr = pickle.load(open('./reg_params.sav', 'rb'))
+    return lr.predict(x)
