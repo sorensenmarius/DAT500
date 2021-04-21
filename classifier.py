@@ -1,14 +1,17 @@
 #%%
 import pandas as pd
+import numpy as np
 import re
 import nltk
 import pickle
+from scipy import sparse
 nltk.download('punkt')
 nltk.download('wordnet')
 
 
 from yellowbrick.text import FreqDistVisualizer
 from sklearn.feature_extraction.text import CountVectorizer
+from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LogisticRegression
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import accuracy_score
@@ -24,9 +27,9 @@ trainData = pd.read_csv(r'data/gender-classifier-DFE-791531.csv',
                    encoding = "latin1")
 
 # testData = pd.read_csv(r'data/blog-gender-dataset-clean.csv',names=["gender","description"],
-                #    encoding = "latin1")
+                #    encoding = "utf-8")
 #%%
-data = trainData.loc[:,["gender", "description"]]
+data = trainData.loc[:,["gender", "description", "tweet_created"]]
 data.dropna(axis = 0, inplace = True)
 data.gender = [1 if gender == "female" else 0 for gender in data.gender]
 
@@ -34,9 +37,15 @@ data.gender = [1 if gender == "female" else 0 for gender in data.gender]
 
 # %% natural language processing 
 def nl_processing(data): 
+    emoji_pat = '[\U0001F300-\U0001F64F\U0001F680-\U0001F6FF\u2600-\u26FF\u2700-\u27BF]'
+    shrink_whitespace_reg = re.compile(r'\s{2,}')
     description_list = [] # we created a list so we after these steps, we will append into this list
     for description in data.description:
-        description = re.sub("[^a-zA-Z]", " ", description) # remove non letter signs 
+        reg = re.compile(r'({})|[^a-zA-Z]'.format(emoji_pat)) # line a
+        result = reg.sub(lambda x: ' {} '.format(x.group(1)) if x.group(1) else ' ', description)
+        description =shrink_whitespace_reg.sub(' ', result)
+
+        #description = re.sub("[^a-zA-Z]", " ", description) # remove non letter signs 
         description = description.lower() 
         description = nltk.word_tokenize(description) # list of words
         lemma = nltk.WordNetLemmatizer() 
@@ -51,7 +60,7 @@ description_list = nl_processing(data)
 # %%
 # Bag of Words
 def bag_words(description_list):
-    max_features = 1500
+    max_features = 5000
     count_vectorizer = CountVectorizer(max_features=max_features,stop_words = "english")
     sparce_matrix = count_vectorizer.fit_transform(description_list).toarray()
     features = count_vectorizer.get_feature_names()
@@ -59,6 +68,7 @@ def bag_words(description_list):
 
 #%%
 sparce_matrix, features = bag_words(description_list)
+pickle.dump(features, open('./reg_features.sav', 'wb'))
 
 #%% visualize most freq words
 visualizer = FreqDistVisualizer(features=features, orient='v', n = 10, color = "orange")
@@ -78,8 +88,8 @@ x_train, x_test, y_train, y_test = train_test_split(x, y, test_size = 0.1, rando
 
 # %% Logistic regression
 lr = LogisticRegression(random_state = 22)
-lr.fit(x, y)
-
+lr.fit(x_train, y_train)
+print(lr.get_params)
 print('Saving LR parameters')
 pickle.dump(lr, open('./reg_params.sav', 'wb'))
 
@@ -97,5 +107,20 @@ print("Accuracy:{:.3%}".format(accuracy_score(y_test, y_pred)))
 
 #%%
 def classify_gender(x):
+    #id, sentiment, text = x.split(",",2)
+    text = x
+    features = pickle.load(open('./reg_features.sav', 'rb'))
+    sparce_test = [feature not in text for feature in features]
+    sparce_test =np.array(sparce_test).astype(int).reshape(1,-1)
     lr = pickle.load(open('./reg_params.sav', 'rb'))
-    return lr.predict(x)
+    return lr.predict(sparce_test)
+
+#%%
+
+    
+
+
+
+# %%
+
+# %%
