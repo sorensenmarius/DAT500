@@ -30,8 +30,18 @@ def get_tweets(token):
 
             for i in range(len(tweets)//100):
                 tweet_ids = ','.join([str(item) for item in tweets.index[100 * i:100 * (i + 1)]])
-                r = requests.get(f'https://api.twitter.com/2/tweets?ids={tweet_ids}', headers = headers)
-
+                
+                try:
+                    r = requests.get(f'https://api.twitter.com/2/tweets?ids={tweet_ids}', headers = headers)
+                except ConnectionError as e:
+                    print(f"connection error on {token}, stopping for 5 minutes")
+                    time.sleep(60*5)
+                    continue
+                except Exception as e:
+                    print(f'An error occured on {token}, waiting for 5 minutes')
+                    time.sleep(60*5)
+                    continue
+                
                 # Too many requests response, wait 5 minutes and try again
                 if int(r.status_code) == 429:
                     print(f"reached rate limit on {token}, stopping for 15 minutes")
