@@ -5,6 +5,7 @@ import os
 import pandas as pd
 import requests
 import threading
+import time
 
 load_dotenv()
 
@@ -27,9 +28,16 @@ def get_tweets(token):
             except Exception as e:
                 print("Error creating dataframe: ", e)
 
-            for i in range(len(tweets)):
+            for i in range(len(tweets)//100):
                 tweet_ids = ','.join([str(item) for item in tweets.index[100 * i:100 * (i + 1)]])
                 r = requests.get(f'https://api.twitter.com/2/tweets?ids={tweet_ids}', headers = headers)
+
+                # Too many requests response, wait 5 minutes and try again
+                if int(r.status_code) == 429:
+                    print(f"reached rate limit on {token}, stopping for 15 minutes")
+                    time.sleep(60*15)
+                    continue
+
                 try:
                     response = json.loads(r.content)
                     if 'data' in response:
@@ -42,7 +50,8 @@ def get_tweets(token):
                 except Exception as e:
                     print("Error on adding response to inner dataframe: ", e)
 
-                if i % 10000 == 0:
+                if i % 100 == 0:
+                    print(f'Added {df_inner.shape[0]} tweets from {token}')
                     df_inner.to_csv(f'resulting_tweets/thread_{token[-1]}.csv', mode='a', header=False, index=False)
                     df_inner = pd.DataFrame(columns=['id', 'Sentiment', 'Text'])
                     df_inner.set_index('id')
