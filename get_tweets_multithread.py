@@ -20,8 +20,14 @@ def get_tweets(token):
 
             tweets['Text'] = ''
             headers = {'Authorization': f'Bearer {os.getenv(token)}'}
+            
+            try:
+                df_inner = pd.DataFrame(columns=['id','Sentiment', 'Text'])
+                df_inner.set_index('id')
+            except Exception as e:
+                print("Error creating dataframe: ", e)
 
-            for i in range(len(10)):
+            for i in range(len(tweets)):
                 tweet_ids = ','.join([str(item) for item in tweets.index[100 * i:100 * (i + 1)]])
                 r = requests.get(f'https://api.twitter.com/2/tweets?ids={tweet_ids}', headers = headers)
                 try:
@@ -29,12 +35,17 @@ def get_tweets(token):
                     if 'data' in response:
                         d = response['data']
                         for tweet in d:
-                            tweets.loc[int(tweet['id']), 'Text'] = tweet['text']
+                            df_inner = df_inner.append({'id': tweet['id'],
+                                             'Sentiment': tweets.loc[int(tweet['id']), 'Sentiment'],
+                                             'Text': tweet['text']
+                                            }, ignore_index=True)
                 except Exception as e:
-                    print(e)
+                    print("Error on adding response to inner dataframe: ", e)
 
-            tweets.to_csv(f'resulting_tweets/thread_{token[-1]}.csv', mode='a', header=False)
-
+                if i % 10000 == 0:
+                    df_inner.to_csv(f'resulting_tweets/thread_{token[-1]}.csv', mode='a', header=False, index=False)
+                    df_inner = pd.DataFrame(columns=['id', 'Sentiment', 'Text'])
+                    df_inner.set_index('id')
 
 # %%
 try:
