@@ -1,3 +1,5 @@
+#! /usr/bin/python
+
 from mrjob.job import MRJob
 import pickle
 import numpy as np
