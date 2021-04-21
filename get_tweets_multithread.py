@@ -21,7 +21,7 @@ def get_tweets(token):
             tweets['Text'] = ''
             headers = {'Authorization': f'Bearer {os.getenv(token)}'}
 
-            for i in range(len(tweets)):
+            for i in range(len(10)):
                 tweet_ids = ','.join([str(item) for item in tweets.index[100 * i:100 * (i + 1)]])
                 r = requests.get(f'https://api.twitter.com/2/tweets?ids={tweet_ids}', headers = headers)
                 try:
@@ -33,7 +33,7 @@ def get_tweets(token):
                 except Exception as e:
                     print(e)
 
-            tweets.to_csv(f'resulting_tweets/thread_{token[-1]}', mode='a', header=False)
+            tweets.to_csv(f'resulting_tweets/thread_{token[-1]}.csv', mode='a', header=False)
 
 
 # %%
