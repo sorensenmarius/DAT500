@@ -1,6 +1,11 @@
-from mrjob.job import MRJob
 import pickle
 # import numpy as np
+
+import sys
+sys.path.insert(0, './packages/mrjob.zip')
+
+import numpy as np
+from mrjob.job import MRJob
 class MRClassify(MRJob):
     def mapper(self,_, line): 
         id, sentiment, text = line.split(",",2)
