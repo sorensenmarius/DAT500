@@ -1,13 +1,9 @@
 #! /usr/bin/python
 
-import pickle
-# import numpy as np
-
-import sys
-sys.path.insert(0, 'mrjob_numpy.zip')
-
+# import pickle
 import numpy as np
 from mrjob.job import MRJob
+
 class MRClassify(MRJob):
     def mapper(self,_, line): 
         id, sentiment, text = line.split(",",2)
@@ -26,4 +22,3 @@ class MRClassify(MRJob):
 
 if __name__ == '__main__': 
     MRClassify.run()
-    
