@@ -1,0 +1,1 @@
+$HADOOP_HOME/bin/hadoop jar $HADOOP_HOME/hadoop-streaming.jar -input tweets/big.csv -output with_gender -mapper classify.py -file classify.py ../packages/mrjob_numpy.zip
