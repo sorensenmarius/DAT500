@@ -17,7 +17,7 @@ class MRClassify(MRJob):
         # sparce_test = np.array(sparce_test).astype(int).reshape(1,-1)
         # lr = pickle.load(open('./reg_params.sav', 'rb'))
         # gen_pred = lr.predict(sparce_test)
-        gen_pred = 'IKKE BINÆRT >:) '
+        gen_pred = 'HATER NORSKE BOKSTAVER'
 
         yield text, [gen_pred,sentiment]
 
