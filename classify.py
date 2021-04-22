@@ -2,7 +2,7 @@ import pickle
 # import numpy as np
 
 import sys
-sys.path.insert(0, './packages/mrjob.zip')
+sys.path.insert(0, 'mrjob_numpy.zip')
 
 import numpy as np
 from mrjob.job import MRJob
