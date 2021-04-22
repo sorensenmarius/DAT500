@@ -1,4 +1,4 @@
 .vscode/
 data/
-resulting_tweets/
+resulting_tweets/*
 logging.log
