@@ -88,7 +88,15 @@ try:
    T2.start()
    T3 = threading.Thread(target=get_tweets, args=('TWITTER_TOKEN_3',))
    T3.start()
+   T4 = threading.Thread(target=get_tweets, args=('TWITTER_TOKEN_4',))
+   T4.start()
+   T5 = threading.Thread(target=get_tweets, args=('TWITTER_TOKEN_5',))
+   T5.start()
+   T6 = threading.Thread(target=get_tweets, args=('TWITTER_TOKEN_6',))
+   T6.start()
 except:
    logging.warning("Error: unable to start thread")
 
+# %%
+threading.active_count()
 # %%
