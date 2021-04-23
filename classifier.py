@@ -12,10 +12,13 @@ nltk.download('wordnet')
 from yellowbrick.text import FreqDistVisualizer
 from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.model_selection import train_test_split
-from sklearn.linear_model import LogisticRegression
+from sklearn.linear_model import LogisticRegression, SGDClassifier
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import accuracy_score
 from sklearn.model_selection import train_test_split
+from sklearn.tree import DecisionTreeClassifier
+from sklearn.preprocessing import StandardScaler
+from sklearn.pipeline import make_pipeline
 
 
 
@@ -29,7 +32,7 @@ trainData = pd.read_csv(r'data/gender-classifier-DFE-791531.csv',
 # testData = pd.read_csv(r'data/blog-gender-dataset-clean.csv',names=["gender","description"],
                 #    encoding = "utf-8")
 #%%
-data = trainData.loc[:,["gender", "description", "tweet_created"]]
+data = trainData.loc[:,["gender", "text", "tweet_created"]]
 data.dropna(axis = 0, inplace = True)
 data.gender = [1 if gender == "female" else 0 for gender in data.gender]
 
@@ -40,7 +43,7 @@ def nl_processing(data):
     emoji_pat = '[\U0001F300-\U0001F64F\U0001F680-\U0001F6FF\u2600-\u26FF\u2700-\u27BF]'
     shrink_whitespace_reg = re.compile(r'\s{2,}')
     description_list = [] # we created a list so we after these steps, we will append into this list
-    for description in data.description:
+    for description in data.text:
         reg = re.compile(r'({})|[^a-zA-Z]'.format(emoji_pat)) # line a
         result = reg.sub(lambda x: ' {} '.format(x.group(1)) if x.group(1) else ' ', description)
         description =shrink_whitespace_reg.sub(' ', result)
@@ -87,7 +90,7 @@ x_train, x_test, y_train, y_test = train_test_split(x, y, test_size = 0.1, rando
 #%%
 
 # %% Logistic regression
-lr = LogisticRegression(random_state = 22)
+lr = LogisticRegression()
 lr.fit(x_train, y_train)
 print(lr.get_params)
 print('Saving LR parameters')
@@ -106,21 +109,37 @@ accuracy = 100.0 * accuracy_score(y_test, y_pred)
 print("Accuracy:{:.3%}".format(accuracy_score(y_test, y_pred)))
 
 #%%
+from sklearn.tree import DecisionTreeClassifier
+
+dc = DecisionTreeClassifier()
+dc.fit(x,y)
+
+pickle.dump(dc, open('./dc_params.sav', 'wb'))
+
+
+#%%
 def classify_gender(x):
     #id, sentiment, text = x.split(",",2)
     text = x
     features = pickle.load(open('./reg_features.sav', 'rb'))
-    sparce_test = [feature not in text for feature in features]
+    sparce_test = [feature in text for feature in features]
     sparce_test =np.array(sparce_test).astype(int).reshape(1,-1)
-    lr = pickle.load(open('./reg_params.sav', 'rb'))
+    lr = pickle.load(open('./dc_params.sav', 'rb'))
     return lr.predict(sparce_test)
 
 #%%
+blogData = pd.read_csv(r'data/blog-gender-dataset-clean.csv',names=["gender","text"],
+                   encoding = "utf-8")
+y_test = blogData.gender
+cleanBlog = nl_processing(blogData)
+testData = pd.read_csv(r'data/covid_tweet.csv',names=["id","sentiment","text"],encoding = "utf-8")
+cleanTweets=nl_processing(testData)
+test_pred =[]
+for tweet in cleanBlog: 
+    test_pred.append(classify_gender(tweet))
 
-    
-
-
-
-# %%
+test_pred
+accuracy = 100.0 * accuracy_score(y_test, test_pred)
+print("Accuracy:{:.3%}".format(accuracy_score(y_test, test_pred)))
 
 # %%

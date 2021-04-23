@@ -28,7 +28,7 @@ class MRPreprocess(MRJob):
         yield id, [sentiment, text, time_created]
     
     def reduce(self, key, values): 
-        string = f'{key},{values[0][1]},{values[0][2]},{values[0][1]}'
+        string = f'{key},{values[0][0]},{values[0][1]},{values[0][2]}'
         yield string
 
 if __name__ == '__main__': 
