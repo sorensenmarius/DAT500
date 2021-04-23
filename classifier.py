@@ -62,15 +62,6 @@ def nl_processing(data):
 description_list = nl_processing(data)
 # description_list_test = nl_processing(testData)
 
-#%%
-def findShingles(article, k=2):
-    combined = ngrams(article.split(),k)
-    shingles =[' '.join(x) for x in combined]
-    return shingles
-
-
-#%%
-
 # %%
 # Bag of Words
 def bag_words(description_list):
@@ -154,28 +145,4 @@ test_pred
 accuracy = 100.0 * accuracy_score(y_test, test_pred)
 print("Accuracy:{:.3%}".format(accuracy_score(y_test, test_pred)))
 
-# %%
-# from sklearn.decomposition import PCA
 
-# pca = PCA(n_components=3, svd_solver='full')
-# pca.fit(x)
-# # %%
-
-# # %%
-# from matplotlib import pyplot as plt
-# df = pd.DataFrame(x)
-# df
-# df.insert(3, 'gender', y) 
-
-# X_male = df.loc[df['gender'] == 0, 'X']
-# Y_male = df.loc[df['gender'] == 0, 'Y']
-# Z_male = df.loc[df['gender'] == 0, 'Z']
-# X_female = df.loc[df['gender'] == 1, 'X']
-# Y_female = df.loc[df['gender'] == 1, 'Y']
-# Z_female = df.loc[df['gender'] == 1, 'Z']
-
-# fig = plt.figure()
-# ax = fig.add_subplot(projection='3d')
-# ax.scatter(X_male, Y_male, Z_male, color='blue')
-# ax.scatter(X_female, Y_female, Z_female, color='red')
-# %%
