@@ -1,6 +1,9 @@
-from mrjob.job import MRJob
+#! /usr/bin/python
+
 import pickle
 import numpy as np
+from mrjob.job import MRJob
+
 class MRClassify(MRJob):
     def mapper(self,_, line): 
         id, sentiment, text, time = line.split(",",2)
@@ -19,4 +22,3 @@ class MRClassify(MRJob):
 
 if __name__ == '__main__': 
     MRClassify.run()
-    

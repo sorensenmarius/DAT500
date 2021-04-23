@@ -1,1 +1,5 @@
 .vscode/
+data/
+resulting_tweets/*
+logging.log
+combined.csv
