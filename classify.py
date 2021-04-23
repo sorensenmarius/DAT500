@@ -12,9 +12,10 @@ class MRClassify(MRJob):
         gen_pred = lr.predict(sparce_test)
 
         yield text, [gen_pred,sentiment,time]
+        # yield [text,sentiment,time] , gen_pred
 
-    def reducer(self, key, values):
-        yield key, values
+    # def reducer(self, key, values):
+    #     yield key, values
 
 if __name__ == '__main__': 
     MRClassify.run()

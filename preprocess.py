@@ -25,11 +25,13 @@ class MRPreprocess(MRJob):
         timestamp = shifted + 1288834974657
         time_created = time.ctime(timestamp/1000)
 
-        yield id, [sentiment, text, time_created]
+        string = f'{sentiment},{description},{time_created}'
+
+        yield id, string
     
-    def reduce(self, key, values): 
-        string = f'{key},{values[0][0]},{values[0][1]},{values[0][2]}'
-        yield string
+    # def reduce(self, key, values): 
+    #     string = f'{key},{values[0][0]},{values[0][1]},{values[0][2]}'
+    #     yield string
 
 if __name__ == '__main__': 
     MRPreprocess.run()
