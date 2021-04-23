@@ -1,24 +1,31 @@
 #! /usr/bin/python
 
-import pickle
+# import pickle
 import numpy as np
-from mrjob.job import MRJob
+import sys
 
-class MRClassify(MRJob):
-    def mapper(self,_, line): 
-        id, sentiment, text, time = line.split(",",2)
-        features = pickle.load(open('./reg_features.sav', 'rb'))
+import zipimport
+importer = zipimport.zipimporter('mrjob_numpy_yaml.zip')
+mrjob = importer.load_module('mrjob')
+job = importer.load_module('mrjob/job')
 
-        sparce_test = [feature not in text for feature in features]
-        sparce_test =np.array(sparce_test).astype(int).reshape(1,-1)
-        lr = pickle.load(open('./dc_params.sav', 'rb'))
-        gen_pred = lr.predict(sparce_test)
+class MRClassify(job.MRJob):
+    def mapper(self,_, line):
+        sys.stderr.write('Line: ' + line)
+        # id, sentiment, text = line.split(",",2)
+        # features = pickle.load(open('./reg_features.sav', 'rb'))
 
-        yield text, [gen_pred,sentiment,time]
-        # yield [text,sentiment,time] , gen_pred
+        # sparce_test = [feature not in text for feature in features]
+        # sparce_test = np.array(sparce_test).astype(int).reshape(1,-1)
+        # lr = pickle.load(open('./reg_params.sav', 'rb'))
+        # gen_pred = lr.predict(sparce_test)
+        gen_pred = 'HATER NORSKE BOKSTAVER'
+        text = 'yeet'
 
-    # def reducer(self, key, values):
-    #     yield key, values
+        yield text, [gen_pred,sentiment]
 
-if __name__ == '__main__': 
+    def reducer(self, key, values):
+        yield key, values
+
+if __name__ == '__main__':
     MRClassify.run()
