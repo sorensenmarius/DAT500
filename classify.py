@@ -16,7 +16,7 @@ class MRClassify(MRJob):
         sparce_test = [feature in text for feature in self.features]
         sparce_test = np.array(sparce_test).astype(int).reshape(1,-1)
 
-        gen_pred = self.lr.predict(sparce_test)
+        gen_pred = self.lr.predict(sparce_test)[0]
 
 
         yield id, f'{sentiment},{date},{gen_pred},{text}'
