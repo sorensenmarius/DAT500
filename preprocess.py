@@ -1,4 +1,5 @@
 from mrjob.job import MRJob
+import datetime.datetime as dt
 import pickle
 import re
 import nltk
@@ -37,7 +38,7 @@ class MRPreprocess(MRJob):
 
         shifted = id >> 22 
         timestamp = shifted + 1288834974657
-        time_created = time.ctime(timestamp/1000)
+        time_created = dt.fromtimestamp(timestamp/1000).strftime('%Y-%m-%d')
 
         string = f'{sentiment},{time_created},{description}'
 
