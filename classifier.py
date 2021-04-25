@@ -37,11 +37,11 @@ trainData = pd.read_csv(r'data/gender-classifier-DFE-791531.csv',
 #%%
 data = trainData.loc[:,["gender", "text", "tweet_created"]]
 data.dropna(axis = 0, inplace = True)
-data.gender = [1 if gender == "female" else 0 for gender in data.gender]
-
+data.gender = [1 if gender == "female" else (0 if gender == "male" else 2 )for gender in data.gender]
+#data.gender = [1 if gender == 'female' else 0 for gender in data.gender]
 # testData.dropna(axis=0, inplace=True)
 #%%
-data
+data.loc[data['gender'] == 2]
 # %% natural language processing 
 def nl_processing(data): 
     emoji_pat = '[\U0001F300-\U0001F64F\U0001F680-\U0001F6FF\u2600-\u26FF\u2700-\u27BF]'
@@ -124,9 +124,14 @@ from sklearn import tree
 dc = DecisionTreeClassifier(max_depth=10, min_samples_leaf = 1)
 dc.fit(x,y)
 
+#y_pred=dc.predict(x_test)
+
+#accuracy = 100.0 * accuracy_score(y_test, y_pred)
+#print("Accuracy:{:.3%}".format(accuracy_score(y_test, y_pred)))
+
 pickle.dump(dc, open('./dc_params.sav', 'wb'),protocol=2)
 
-tree.plot_tree(dc)
+#tree.plot_tree(dc)
 #%%
 features = pickle.load(open('./reg_features.sav', 'rb'))
 lr = pickle.load(open('./dc_params.sav', 'rb'))
@@ -148,7 +153,7 @@ cleanBlog = nl_processing(blogData)
 testData = pd.read_csv(r'data/covid_tweet.csv',names=["id","sentiment","text"],encoding = "utf-8")
 cleanTweets=nl_processing(testData)
 test_pred =[]
-for tweet in cleanTest: 
+for tweet in cleanBlog: 
     test_pred.append(classify_gender(tweet))
 
 test_pred

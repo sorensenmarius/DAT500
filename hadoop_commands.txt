@@ -2,4 +2,4 @@ $HADOOP_HOME/bin/hadoop jar $HADOOP_HOME/hadoop-streaming.jar -input tweets/big.
 hadoop fs -rm -r with_gender
 
 
-python mappers/date_avg.py -r local --no-bootstrap-mrjob data/classified.csv > data/date_avg.csv
+python mappers/date_avg.py -r local --no-bootstrap-mrjob data/classified.csv > reduced_data/date_avg.csv
