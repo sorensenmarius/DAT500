@@ -23,3 +23,9 @@ date_gender_sentiment.drop(columns=['DateAndGender'])
 fig = px.line(date_gender_sentiment, x="Date", y='Count',color="Gender")
 fig.show()
 # %%
+fig = px.bar(date_gender_sentiment, x="Date", y='Count',color="Gender")
+fig.show()
+
+# %%
+fig = px.histogram(date_gender_sentiment, x="Date", y='Count',color="Gender")
+fig.show()
