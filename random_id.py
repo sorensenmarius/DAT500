@@ -40,11 +40,10 @@ def get_tweets(token):
         tweets['Text'] = ''
         headers = {'Authorization': f'Bearer {os.getenv(token)}'}
 
-        start = random.randint(1, tweets.shape[0]-1000)
+        start = random.randint(100, tweets.shape[0]-1000)//100
 
         for i in range(start, start+10):
             tweet_ids = ','.join([str(item) for item in tweets.index[100 * i:100 * (i + 1)]])
-            
             try:
                 r = requests.get(f'https://api.twitter.com/2/tweets?ids={tweet_ids}', headers = headers)
             except ConnectionError as e:
@@ -84,6 +83,8 @@ def get_tweets(token):
         df_inner.to_csv(f'resulting_tweets/random_thread_{token[-1]}.csv', mode='a', header=False, index=False)
         df_inner = pd.DataFrame(columns=['id', 'Sentiment', 'Text'])
         df_inner.set_index('id')
+
+get_tweets('TWITTER_TOKEN_2')
                 
 
 # %%
