@@ -1,6 +1,7 @@
 from mrjob.job import MRJob
 from statistics import mean
 
+
 class MRDateAvg(MRJob):
     def mapper(self,_,line):
         _, string = line.split('\t')

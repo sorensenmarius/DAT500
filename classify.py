@@ -9,6 +9,7 @@ class MRClassify(MRJob):
 
     def mapper(self,_, line):
         id, string = line.split('\t', 1)
+        id = id.strip("")
         id = int(id)
         string = string.strip("\"")
         sentiment, date, text = string.split(",",3)
