@@ -37,8 +37,8 @@ trainData = pd.read_csv(r'data/gender-classifier-DFE-791531.csv',
 #%%
 data = trainData.loc[:,["gender", "text", "tweet_created"]]
 data.dropna(axis = 0, inplace = True)
-data.gender = [1 if gender == "female" else (0 if gender == "male" else 2 )for gender in data.gender]
-#data.gender = [1 if gender == 'female' else 0 for gender in data.gender]
+#data.gender = [1 if gender == "female" else (0 if gender == "male" else 2 )for gender in data.gender]
+data.gender = [1 if gender == 'female' else 0 for gender in data.gender]
 # testData.dropna(axis=0, inplace=True)
 #%%
 data.loc[data['gender'] == 2]
@@ -49,9 +49,9 @@ def nl_processing(data):
     description_list = [] # we created a list so we after these steps, we will append into this list
     for description in data.text:
         try:
-            #reg = re.compile(r'({})|[^a-zA-Z]'.format(emoji_pat)) # line a
-            #result = reg.sub(lambda x: ' {} '.format(x.group(1)) if x.group(1) else ' ', description)
-            #description =shrink_whitespace_reg.sub(' ', result)
+            reg = re.compile(r'({})|[^a-zA-Z]'.format(emoji_pat)) # line a
+            result = reg.sub(lambda x: ' {} '.format(x.group(1)) if x.group(1) else ' ', description)
+            description =shrink_whitespace_reg.sub(' ', result)
 
             description = re.sub("[^a-zA-Z]", " ", description) # remove non letter signs 
             description = description.lower() 
@@ -162,17 +162,5 @@ print("Accuracy:{:.3%}".format(accuracy_score(y_test, test_pred)))
 
 
 
-# %%
-testData = pd.read_csv(r'data/combined.csv',names=["id","sentiment","text"],
-                   encoding = "utf-8")
-# %%
-testData = testData[testData['text'].notna()]
-# %%
-cleanTest = nl_processing(testData)
-# %%
-test_pred =[]
-for tweet in cleanTest: 
-    test_pred.append(classify_gender(tweet))
 
-testData.insert(3, 'gender', test_pred)
 # %%
