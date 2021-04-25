@@ -1,1 +1,5 @@
-$HADOOP_HOME/bin/hadoop jar $HADOOP_HOME/hadoop-streaming.jar -input tweets/big.csv -output with_gender -mapper classify.py -file classify.py ../packages/mrjob_numpy.zip
+$HADOOP_HOME/bin/hadoop jar $HADOOP_HOME/hadoop-streaming.jar -input tweets/big.csv -output with_gender -mapper classify.py -file classify.py ../packages/mrjob.zip
+hadoop fs -rm -r with_gender
+
+
+python mappers/date_avg.py -r local --no-bootstrap-mrjob data/classified.csv > reduced_data/date_avg.csv

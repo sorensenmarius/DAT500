@@ -1,12 +1,7 @@
 from mrjob.job import MRJob
 from datetime import datetime
-import pickle
 import re
 import nltk
-import numpy as np
-import time
-nltk.download('punkt')
-nltk.download('wordnet')
 
 class MRPreprocess(MRJob):
     def mapper(self, _, line): 

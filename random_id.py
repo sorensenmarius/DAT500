@@ -61,7 +61,7 @@ def get_tweets(token):
             if int(r.status_code) == 429:
                 print(f"reached rate limit on {token}, stopping for 15 minutes")
                 logging.warning(f"reached rate limit on {token}, stopping for 15 minutes")
-                time.sleep(60*15)
+                time.sleep(60*5)
                 continue
 
             try:
