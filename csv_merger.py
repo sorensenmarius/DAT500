@@ -12,6 +12,8 @@ elif sys.argv[1] == 'old':
 elif sys.argv[1] == 'all':
     files = glob.glob('*.csv')
 elif sys.argv[1] == 'random':
+    files = glob.glob('random_thread_?.csv')
+elif sys.argv[1] == 'fullRandom':
     files = glob.glob('random_thread_?.csv') + ['../../dis_materials/combined.csv']
 
 combined_csv = [pd.read_csv(f, index_col=None, sep=',', header=0, engine='python', encoding='utf-8', error_bad_lines=False) for f in files]
