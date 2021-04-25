@@ -40,7 +40,7 @@ def get_tweets(token):
         tweets['Text'] = ''
         headers = {'Authorization': f'Bearer {os.getenv(token)}'}
 
-        start = random.randint(1, tweets.count()-10)
+        start = random.randint(1, tweets.shape[0]-1000)
 
         for i in range(start, start+10):
             tweet_ids = ','.join([str(item) for item in tweets.index[100 * i:100 * (i + 1)]])
