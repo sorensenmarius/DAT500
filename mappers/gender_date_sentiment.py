@@ -6,8 +6,8 @@ class GenderDateSentiment(MRJob):
         _, string = line.split('\t')
         string = string.strip("\"")
         sentiment, date, gender, _ = string.split(',',3)
-        if float(sentiment) != 0:
-            yield (date, gender), float(sentiment)
+        # if float(sentiment) != 0:
+        yield (date, gender), float(sentiment)
 
     def reducer(self, key, values):
         yield key, mean(values)
