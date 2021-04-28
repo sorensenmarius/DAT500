@@ -12,13 +12,7 @@ lr = pickle.load(open('./dc_params.sav', 'rb'))
 def mapper(line): 
     line = line[1:-1]
 
-    try:
-        id, string = line.split(',', 1)
-    except:
-        print('Ran into an error, the line is: ')
-        print(line)
-        return
-
+    id, string = line.split(',', 1)
     id = id.strip("")
     id = int(id)
 
