@@ -17,6 +17,7 @@ def mapper(line):
     except:
         print('Ran into an error, the line is: ')
         print(line)
+        return
 
     id = id.strip("")
     id = int(id)
