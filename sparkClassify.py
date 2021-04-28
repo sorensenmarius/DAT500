@@ -35,7 +35,7 @@ if __name__ == "__main__":
     spark = SparkSession\
         .builder\
         .appName("Classify")\
-        .master('spark://master:7077')\
+        # .master('spark://master:7077')\
         .config("spark.executor.memory", "6g")\
         .getOrCreate()
 
