@@ -7,11 +7,11 @@ from datetime import datetime
 import nltk
 from pyspark.sql import SparkSession
 
-features = pickle.load(open('./reg_features.sav', 'rb'))
-lr = pickle.load(open('./dc_params.sav', 'rb'))
 
+def mapper(line, nltk):
+        nltk.download('punkt')
+        nltk.download('wordnet')
 
-def mapper(line): 
         split=line.split(",",2)
 
         try:
@@ -48,16 +48,21 @@ def mapper(line):
 
 if __name__ == "__main__":
     if len(sys.argv) != 3:
-        print("Usage: wordcount <file>", file=sys.stderr)
+        print("Usage: preprocess.py <input path> <output path>", file=sys.stderr)
         sys.exit(-1)
+
+    features = pickle.load(open('./reg_features.sav', 'rb'))
+    lr = pickle.load(open('./dc_params.sav', 'rb'))
 
     spark = SparkSession\
         .builder\
-        .appName("PythonWordCount")\
+        .appName("Preprocess")\
+        .master('spark://master:7077')\
+        .config("spark.executor.memory", "6g")\
         .getOrCreate()
 
     lines = spark.read.text(sys.argv[1]).rdd.map(lambda r: r[0])
-    counts = lines.map(mapper) 
+    counts = lines.map(lambda x: mapper(x, nltk)) 
     counts.saveAsTextFile(sys.argv[2])
 
     spark.stop()
