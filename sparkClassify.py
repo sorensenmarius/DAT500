@@ -15,6 +15,7 @@ def mapper(line):
     try:
         id, string = line.split(',', 1)
     except:
+        print('Ran into an error, the line is: ')
         print(line)
 
     id = id.strip("")
