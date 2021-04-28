@@ -10,10 +10,13 @@ lr = pickle.load(open('./dc_params.sav', 'rb'))
 
 
 def mapper(line): 
-    id, string = line.split('\t', 1)
+    line = line[1:-1]
+
+    id, string = line.split(',', 1)
     id = id.strip("")
-    id = int(id)        
-    string = string.strip("\"")
+    id = int(id)
+
+    string = string[1:-1]
     sentiment, date, text = string.split(",",3)
         
     sparce_test = [feature in text for feature in features]
