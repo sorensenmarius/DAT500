@@ -3,3 +3,6 @@ hadoop fs -rm -r with_gender
 
 
 python mappers/date_avg.py -r local --no-bootstrap-mrjob data/classified.csv > reduced_data/date_avg.csv
+
+Create ssh tunnel to see Spark status locally:
+ssh -L 8080:localhost:80 ubuntu@152.94.169.130 -i ~/.ssh/dat500
