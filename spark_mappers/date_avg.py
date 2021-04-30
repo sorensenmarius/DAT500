@@ -20,7 +20,8 @@ if __name__ == '__main__':
         .getOrCreate()
 
     lines = spark.read.text(sys.argv[0]).rdd.map(lambda r: r[0])
-    map_res = lines.map(mapper) 
-    map_res.saveAsTextFile(sys.argv[2])
+    mapped = lines.map(mapper) 
+    average = mapped.groupByKey().mapValues(lambda x: sum(x)/ len(x))
+    average.saveAsTextFile('average date', sys.argv[2])
 
     spark.stop()
