@@ -59,7 +59,10 @@ if __name__ == "__main__":
 
     spark = SparkSession\
         .builder\
-        .appName("PythonWordCount")\
+        .appName("Preprocess & Classify: " + sys.argv[1].split('/')[1])\
+        .master('spark://master:7077')\
+        .config('spark.executor.memory', '6g')\
+        .config("spark.default.parallelism", "24")\
         .getOrCreate()
 
     lines = spark.read.text(sys.argv[1]).rdd.map(lambda r: r[0])
