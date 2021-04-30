@@ -2,9 +2,15 @@ from pyspark.sql import SparkSession
 import sys
 
 def mapper(line):
-    _, string = line.split('\t')
-    string = string.strip("\"")
-    _, date, gender, _ = string.split(',',3)
+    line = line[1:-1]
+    
+    id, string = line.split(',', 1)
+    id = int(id.strip(''))
+    
+    string = string[2: -1]
+
+    _, date, gender, _ = string.split(',', 3)
+
     return (date, gender), 1
 
 if __name__ == '__main__': 
