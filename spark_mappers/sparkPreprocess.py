@@ -56,7 +56,7 @@ if __name__ == "__main__":
 
     spark = SparkSession\
         .builder\
-        .appName("Preprocess")\
+        .appName("Preprocess: " + sys.argv[1])\
         .master('spark://master:7077')\
         .config("spark.executor.memory", "6g")\
         .getOrCreate()
