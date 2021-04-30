@@ -10,14 +10,15 @@ from pyspark.sql import SparkSession, dataframe
 def mapper(line): 
 
     line = line[1:-1]
-
-    id, string = line.split(',', 1)
-   
+    
+    try:
+        id, string = line.split(',', 1)
+    except:
+        return
     id = id.strip("")
     id = int(id)
 
     string = string[2:-1]
-    print('STRING: ',   string)
     sentiment, date, gender ,_ = string.split(",",3)
         
     
@@ -27,12 +28,12 @@ def mapper(line):
 
 if __name__ == "__main__":
     if len(sys.argv) != 3:
-        print("Usage: wordcount <file>", file=sys.stderr)
+        print("Arguments: <input path> <output path>", file=sys.stderr)
         sys.exit(-1)
 
     spark = SparkSession\
         .builder\
-        .appName("Classify")\
+        .appName('Date-Gender : Sentiment')\
         .master('spark://master:7077')\
         .config("spark.executor.memory", "6g")\
         .getOrCreate()

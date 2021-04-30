@@ -26,12 +26,13 @@ def pos_neg(line):
 
 if __name__ == "__main__":
     if len(sys.argv) != 3:
-        print("Usage: wordcount <file>", file=sys.stderr)
+        print("Arguments: <input path> <output path>", file=sys.stderr)
         sys.exit(-1)
 
     spark = SparkSession\
         .builder\
         .appName("Classify")\
+        .master('spark://master:7077')\
         .config("spark.executor.memory", "1g")\
         .getOrCreate()
 
