@@ -20,6 +20,7 @@ if __name__ == '__main__':
         .getOrCreate()
 
     lines = spark.read.text(sys.argv[0]).rdd.map(lambda r: r[0])
-    map_res = lines.map(lambda x: mapper(x)) 
+    map_res = lines.map(mapper) 
     map_res.saveAsTextFile(sys.argv[2])
 
+    spark.stop()
