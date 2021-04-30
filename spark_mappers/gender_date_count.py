@@ -22,6 +22,6 @@ if __name__ == '__main__':
     lines = spark.read.text(sys.argv[0]).rdd.map(lambda r: r[0])
     mapped = lines.map(mapper) 
     summed = mapped.groupByKey().mapValues(sum)
-    summed.saveAsTextFile('summed', sys.argv[2])
+    summed.saveAsTextFile(sys.argv[2])
 
     spark.stop()
