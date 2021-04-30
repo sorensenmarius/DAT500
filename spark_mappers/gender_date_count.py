@@ -8,7 +8,7 @@ def mapper(line):
     return (date, gender), 1
 
 if __name__ == '__main__': 
-    if len(sys.argv[0] != 3):
+    if len(sys.argv) != 3:
         print('Usage: gender_date_count.py <input path> <ouput path>', file=sys.stderr)
         sys.exit(-1)
     
@@ -19,7 +19,7 @@ if __name__ == '__main__':
         .config('spark.executor.memory', '6g')\
         .getOrCreate()
 
-    lines = spark.read.text(sys.argv[0]).rdd.map(lambda r: r[0])
+    lines = spark.read.text(sys.argv[1]).rdd.map(lambda r: r[0])
     mapped = lines.map(mapper) 
     summed = mapped.groupByKey().mapValues(sum)
     summed.saveAsTextFile(sys.argv[2])
